@@ -7,6 +7,13 @@ WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json package-lock.json* ./
+RUN npm ci
+
+# Production dependencies
+FROM base AS production-deps
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+COPY package.json package-lock.json* ./
 RUN npm ci --only=production
 
 # Rebuild the source code only when needed
@@ -16,10 +23,11 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # スタンドアロンモードでビルド
-ENV STANDALONE true
-ENV HOSTNAME 0.0.0.0
+ENV NODE_ENV=production
+ENV STANDALONE=true
+ENV HOSTNAME=0.0.0.0
 
-RUN npm run build
+RUN npm run build:standalone
 
 # Production image, copy all the files and run next
 FROM base AS runner
