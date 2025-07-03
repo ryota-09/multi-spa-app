@@ -9,13 +9,6 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm ci
 
-# Production dependencies
-FROM base AS production-deps
-RUN apk add --no-cache libc6-compat
-WORKDIR /app
-COPY package.json package-lock.json* ./
-RUN npm ci --only=production
-
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
@@ -35,6 +28,11 @@ WORKDIR /app
 
 ENV NODE_ENV production
 ENV HOSTNAME 0.0.0.0
+ENV STANDALONE true
+
+# NextAuth環境変数（App Runnerで上書きされる）
+ENV AUTH_SECRET="default-secret"
+ENV AUTH_URL="http://localhost:3000"
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -55,4 +53,4 @@ EXPOSE 3000
 
 ENV PORT 3000
 
-CMD ["node", "server.js"]
+ENTRYPOINT ["sh", "-c", "exec /usr/local/bin/node server.js"]

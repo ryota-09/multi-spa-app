@@ -66,7 +66,7 @@ aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS 
 
 # Dockerイメージをビルド
 echo "Dockerイメージをビルド中..."
-docker build -t ${ECR_REPOSITORY_NAME}:${IMAGE_TAG} .
+docker build --platform linux/amd64 -t ${ECR_REPOSITORY_NAME}:${IMAGE_TAG} .
 
 # ECR用にタグ付け
 echo "ECR用にイメージをタグ付け中..."

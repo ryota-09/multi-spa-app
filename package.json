@@ -9,10 +9,10 @@
     "build:standalone": "STANDALONE=true next build",
     "start": "next start",
     "lint": "next lint",
-    "docker:build": "docker build -t multi-spa-app .",
+    "docker:build": "docker build --platform linux/amd64 -t multi-spa-app .",
     "docker:run": "docker run -p 3000:3000 multi-spa-app",
     "ecr:push": "chmod +x scripts/push-to-ecr.sh && ./scripts/push-to-ecr.sh",
-    "ecr:push:dev": "chmod +x scripts/push-to-ecr.sh && ./scripts/push-to-ecr.sh ap-northeast-1 multi-spa-app dev"
+    "ecr:push:dev": "chmod +x scripts/push-to-ecr.sh && ./scripts/push-to-ecr.sh ap-northeast-1 multi-spa-app-dev dev"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",
@@ -20,7 +20,7 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.513.0",
     "next": "15.3.3",
-    "next-auth": "^4.24.11",
+    "next-auth": "^5.0.0-beta.27",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwind-merge": "^3.3.0"

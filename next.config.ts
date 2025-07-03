@@ -6,8 +6,10 @@ const nextConfig: NextConfig = {
   output: process.env.NODE_ENV === 'production' 
     ? (process.env.STANDALONE === "true" ? "standalone" : "export")
     : undefined,
-  // 静的エクスポート時にindex.htmlファイルを生成するため
-  trailingSlash: true,
+  // スタンドアロンモード時はtrailing slashを完全に無効化
+  trailingSlash: process.env.STANDALONE === "true" ? false : (process.env.NODE_ENV === 'production'),
+  // App Runner環境では常にtrailing slashリダイレクトを無効化
+  skipTrailingSlashRedirect: process.env.STANDALONE === "true",
   // 画像最適化設定
   images: {
     unoptimized: process.env.NODE_ENV === 'production' && process.env.STANDALONE !== "true",
@@ -19,6 +21,14 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+  },
+  // APIルートの設定
+  async rewrites() {
+    // スタンドアロンモード(App Runner)でのAPIルート処理
+    if (process.env.STANDALONE === "true") {
+      return [];
+    }
+    return [];
   },
 };
 
